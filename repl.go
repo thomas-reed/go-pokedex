@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"bufio"
 	"strings"
+	
+	"github.com/thomas-reed/go-pokedex/internal/pokeapi"
 )
 
-func startREPL() {
+func startREPL(cfg *pokeapi.Config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -21,9 +23,9 @@ func startREPL() {
 		cmdName := cmd[0]
 		command, exists := getCmdList()[cmdName]
 		if exists {
-			err := command.callback()
+			err := command.callback(cfg)
 			if err != nil {
-				fmt.Printf("Error running %s command: %v", command.name, err)
+				fmt.Printf("Error running %s command: %v\n", command.name, err)
 			}
 		} else {
 			fmt.Println("Unknown command")

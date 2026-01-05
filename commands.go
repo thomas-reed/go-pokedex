@@ -3,12 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/thomas-reed/go-pokedex/internal/pokeapi"
 )
 
 type cliCommand struct {
-	name        string
+	name string
 	description string
-	callback    func() error
+	callback func(cfg *pokeapi.Config) error
 }
 
 func getCmdList() map[string]cliCommand {
@@ -23,10 +25,20 @@ func getCmdList() map[string]cliCommand {
 			description: "Exit the Pokedex",
 			callback: commandExit,
 		},
+		"map": {
+			name: "map",
+			description: "Print the next page of locations",
+			callback: commandMap,
+		},
+		"mapb": {
+			name: "mapb",
+			description: "Print the previous page of locations",
+			callback: commandMapB,
+		},
 	}
 }
 
-func commandHelp() error {
+func commandHelp(cfg *pokeapi.Config) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
@@ -38,9 +50,37 @@ func commandHelp() error {
 	return nil
 }
 
-func commandExit() error {
+func commandExit(cfg *pokeapi.Config) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	fmt.Println()
 	os.Exit(0)
+	return nil
+}
+
+func commandMap(cfg *pokeapi.Config) error {
+	mapRes, err := cfg.PokeapiClient.ListLocations(cfg.NextLocationURL)
+	if err != nil {
+		return err
+	}
+	cfg.NextLocationURL = mapRes.Next
+	cfg.PreviousLocationURL = mapRes.Previous
+
+	for _, location := range mapRes.Results {
+		fmt.Println(location.Name)
+	}
+	return nil
+}
+
+func commandMapB(cfg *pokeapi.Config) error {
+	mapRes, err := cfg.PokeapiClient.ListLocations(cfg.PreviousLocationURL)
+	if err != nil {
+		return err
+	}
+	cfg.NextLocationURL = mapRes.Next
+	cfg.PreviousLocationURL = mapRes.Previous
+
+	for _, location := range mapRes.Results {
+		fmt.Println(location.Name)
+	}
 	return nil
 }
