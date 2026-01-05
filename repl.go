@@ -21,9 +21,14 @@ func startREPL(cfg *pokeapi.Config) {
 		}
 
 		cmdName := cmd[0]
+		args := []string{}
+		if len(cmd) > 1 {
+			args = cmd[1:]
+		}
+		
 		command, exists := getCmdList()[cmdName]
 		if exists {
-			err := command.callback(cfg)
+			err := command.callback(cfg, args...)
 			if err != nil {
 				fmt.Printf("Error running %s command: %v\n", command.name, err)
 			}

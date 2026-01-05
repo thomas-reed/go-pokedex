@@ -24,7 +24,6 @@ func (c *Client) ListLocations(pageURL string) (mapResponse, error) {
 	}
 
 	if result, hit := c.cache.Get(url); hit {
-		fmt.Println("##########################")
 		cachedData := mapResponse{}
 		if err := json.Unmarshal(result, &cachedData); err != nil {
 			return mapResponse{}, fmt.Errorf("Error unmarshalling json body: %s", err)
@@ -55,8 +54,7 @@ func (c *Client) ListLocations(pageURL string) (mapResponse, error) {
 
 	mapRes := mapResponse{}
 	if err := json.Unmarshal(body, &mapRes); err != nil {
-		return mapRes, fmt.Errorf("Error unmarshalling json body: %s", err)
+		return mapResponse{}, fmt.Errorf("Error unmarshalling json body: %s", err)
 	}
 	return mapRes, nil
 }
-
