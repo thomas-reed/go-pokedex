@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/thomas-reed/go-pokedex/internal/pokecache"
-
 )
 
 const (
@@ -30,4 +29,5 @@ type Config struct {
 	PokeapiClient Client
 	NextLocationURL string
 	PreviousLocationURL string
+	Pokedex map[string]Pokemon
 }

@@ -30,7 +30,7 @@ func startREPL(cfg *pokeapi.Config) {
 		if exists {
 			err := command.callback(cfg, args...)
 			if err != nil {
-				fmt.Printf("Error running %s command: %v\n", command.name, err)
+				fmt.Printf("Error running %s command: %v\n\n", command.name, err)
 			}
 		} else {
 			fmt.Println("Unknown command")
